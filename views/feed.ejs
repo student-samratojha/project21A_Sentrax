@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feed - Sentrax</title>
+    <title>Community Feed - Sentrax</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-yellow-50 min-h-screen font-sans text-gray-900">
-    <nav class="bg-white shadow-sm p-4 sticky top-0 z-10 border-b border-yellow-200">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
+    <nav class="bg-white shadow-sm p-4 sticky top-0 z-20 border-b border-yellow-200 flex justify-center">
+        <div class="max-w-4xl w-full mx-auto flex justify-between items-center px-2">
             <a href="/secure/user" class="text-xl font-bold text-yellow-700">Sentrax</a>
             <div class="flex items-center space-x-4">
-                <a href="/posts/create" class="bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-lg text-sm font-bold border border-green-200 transition">Create Post</a>
-                <a href="/secure/<%=currentUser.role%>" class="text-sm font-bold text-red-600 hover:text-red-800">Logout</a>
+                <a href="/posts/create" class="flex items-center bg-green-100 hover:bg-green-200 text-green-800 px-3 sm:px-4 py-2 rounded-lg text-sm font-bold border border-green-200 transition">
+                    <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i>
+                    <span class="hidden sm:inline">Create Post</span>
+                </a>
+                <a href="/auth/logout" class="flex items-center text-sm font-bold text-red-600 hover:text-red-800">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-1"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
             </div>
         </div>
     </nav>
@@ -25,12 +32,33 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
                     <!-- Post Content -->
                     <div class="p-6">
+                        <% if (post.image) { %>
+                            <img src="<%= post.image %>" alt="<%= post.title %>" class="w-full h-48 object-cover rounded-lg mb-4 border border-gray-100">
+                        <% } %>
                         <h3 class="text-xl font-bold text-gray-800 mb-2"><%= post.title %></h3>
                         <p class="text-gray-600 mb-4 leading-relaxed"><%= post.content %></p>
                         <div class="flex items-center text-xs text-gray-400 font-medium">
                             <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">By: <%= post.user.name %></span>
                             <span class="mx-2">•</span>
                             <span><%= new Date(post.createdAt).toLocaleDateString() %></span>
+                        </div>
+
+                        <!-- Like/Dislike Buttons -->
+                        <div class="flex items-center mt-4 space-x-4">
+                            <form action="/posts/like/<%= post._id %>" method="POST">
+                                <button type="submit" class="flex items-center text-sm font-medium px-3 py-1 rounded-full transition
+                                    <%= (post.likes && post.likes.some(l => l.toString() === currentUser.id.toString())) ? 'bg-green-200 text-green-800 border border-green-300' : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-700' %>">
+                                    <i data-lucide="thumbs-up" class="w-4 h-4 mr-1"></i>
+                                    <%= post.likes ? post.likes.length : 0 %>
+                                </button>
+                            </form>
+                            <form action="/posts/dislike/<%= post._id %>" method="POST">
+                                <button type="submit" class="flex items-center text-sm font-medium px-3 py-1 rounded-full transition
+                                    <%= (post.dislikes && post.dislikes.some(d => d.toString() === currentUser.id.toString())) ? 'bg-red-200 text-red-800 border border-red-300' : 'bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-700' %>">
+                                    <i data-lucide="thumbs-down" class="w-4 h-4 mr-1"></i>
+                                    <%= post.dislikes ? post.dislikes.length : 0 %>
+                                </button>
+                            </form>
                         </div>
                     </div>
 
@@ -41,11 +69,17 @@
                         <div class="space-y-4 mb-6">
                             <% if (post.comments && post.comments.length > 0) { %>
                                 <% post.comments.forEach(comment => { %>
-                                    <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                    <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm flex justify-between items-start">
+                                        <div>
                                         <p class="text-sm text-gray-800"><%= comment.content %></p>
-                                        <p class="text-[10px] mt-2 text-gray-400">
+                                        <p class="text-[10px] mt-2 text-gray-500">
                                             — <%= comment.isAnonymous ? 'Anonymous' : (comment.user ? comment.user.name : 'Unknown') %>
                                         </p>
+                                        </div>
+                                        <button class="flex items-center text-xs text-gray-400 hover:text-red-500 transition">
+                                            <i data-lucide="heart" class="w-3 h-3 mr-1"></i>
+                                            <%= comment.likes ? comment.likes.length : 0 %>
+                                        </button>
                                     </div>
                                 <% }) %>
                             <% } else { %>
@@ -58,13 +92,9 @@
                             <textarea name="content" required placeholder="Write a comment..." 
                                 class="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-100 focus:border-green-400 outline-none resize-none h-20"></textarea>
                             
-                            <div class="flex justify-between items-center mt-3">
-                                <label class="flex items-center text-xs text-gray-600 cursor-pointer">
-                                    <input type="checkbox" name="isAnonymous" class="mr-2 rounded border-gray-300 text-green-600 focus:ring-green-100">
-                                    Post anonymously
-                                </label>
-                                <button type="submit" class="bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-md text-xs font-bold border border-green-200 transition">
-                                    Post Comment
+                            <div class="flex justify-end items-center mt-3">
+                                <button type="submit" class="flex items-center bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-md text-xs font-bold border border-green-200 transition">
+                                    <i data-lucide="message-circle" class="w-4 h-4 mr-1"></i> Post Comment
                                 </button>
                             </div>
                         </form>
@@ -78,5 +108,6 @@
             </div>
         <% } %>
     </main>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

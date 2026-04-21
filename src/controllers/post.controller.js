@@ -6,7 +6,7 @@ async function getCreate(req,res){
 // ---------------- CREATE POST ----------------
 async function createPost(req, res) {
   try {
-    const { content,image,title, isAnonymous } = req.body;
+    const { content, image, title } = req.body;
 
     if (!content) {
       return res.redirect("/secure/user?error=content required");
@@ -17,7 +17,6 @@ async function createPost(req, res) {
       content,
       image,
       title,
-      isAnonymous: isAnonymous === "on" ? true : false,
     });
 
     await auditLog(req, req.session.user, "CREATE", "SUCCESS");
@@ -34,7 +33,14 @@ async function getAllPosts(req, res) {
   try {
     const posts = await postModel
       .find({ isDeleted: false })
-      .populate("user", "name")
+      .populate("user", "name") // Populates the user who created the post
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          select: "name", // Populates the user who created the comment
+        },
+      })
       .sort({ createdAt: -1 });
 
     res.render("feed", { posts, currentUser: req.session.user });
@@ -56,7 +62,7 @@ async function likePost(req, res) {
       return res.redirect("/secure/user?error=post not found");
     }
 
-    const alreadyLiked = post.likes.includes(userId);
+    const alreadyLiked = post.likes.some(id => id.toString() === userId.toString());
 
    if (alreadyLiked) {
   post.likes = post.likes.filter(
@@ -141,7 +147,7 @@ async function dislikePost(req, res) {
       return res.redirect("/posts/feed?error=post not found");
     }
 
-    const alreadyDisliked = post.dislikes.includes(userId);
+    const alreadyDisliked = post.dislikes.some(id => id.toString() === userId.toString());
 
     if (alreadyDisliked) {
       // remove dislike

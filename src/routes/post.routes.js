@@ -22,8 +22,8 @@ router.post("/create", isLoggedIn, createPost);
 router.get("/feed", isLoggedIn, getAllPosts);
 
 // like
-router.get("/like/:id", isLoggedIn, likePost);
-router.get("/dislike/:id", isLoggedIn, dislikePost);
+router.post("/like/:id", isLoggedIn, likePost);
+router.post("/dislike/:id", isLoggedIn, dislikePost);
 // admin actions
 router.get("/delete/:id", isLoggedIn, isAdmin, deletePost);
 router.get("/restore/:id", isLoggedIn, isAdmin, restorePost);

@@ -9,6 +9,12 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+      default: "Untitled Post",
+      trim: true,
+    },
 
     content: {
       type: String,
@@ -19,11 +25,6 @@ const postSchema = new mongoose.Schema(
         type: String,
       required: false,
       default: null,
-    },
-
-    isAnonymous: {
-      type: Boolean,
-      default: false,
     },
 
 likes: [
@@ -52,7 +53,16 @@ dislikes: [
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+// Virtual for comments
+postSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "post",
+});
 
 module.exports = mongoose.model("Post", postSchema);
