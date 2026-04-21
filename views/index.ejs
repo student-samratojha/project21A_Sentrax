@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentrax - Secure Community Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-yellow-50 min-h-screen flex flex-col items-center justify-center font-sans text-gray-800 p-6">
+    <div class="max-w-4xl w-full bg-white p-10 rounded-3xl shadow-xl text-center border-t-8 border-yellow-400">
+        <div class="flex justify-center mb-4">
+            <div class="p-3 bg-yellow-100 rounded-2xl text-yellow-700">
+                <i data-lucide="zap" class="w-10 h-10"></i>
+            </div>
+        </div>
+        <h1 class="text-5xl font-black mb-2 text-gray-800 tracking-tight">Sentrax</h1>
+        <p class="mb-10 text-gray-500 text-lg">The ultimate secure hub for community interaction and session management.</p>
+        
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            <div class="p-4 bg-green-100 rounded-2xl border border-green-200 text-left">
+                <i data-lucide="shield-check" class="w-6 h-6 text-green-700 mb-2"></i>
+                <h3 class="font-bold text-green-900 text-sm">Secure Auth</h3>
+                <p class="text-xs text-green-800 opacity-70">Robust login & registration system.</p>
+            </div>
+            <div class="p-4 bg-yellow-100 rounded-2xl border border-yellow-200 text-left">
+                <i data-lucide="message-square" class="w-6 h-6 text-yellow-700 mb-2"></i>
+                <h3 class="font-bold text-yellow-900 text-sm">Community Feed</h3>
+                <p class="text-xs text-yellow-800 opacity-70">Share thoughts and comment on posts.</p>
+            </div>
+            <div class="p-4 bg-red-100 rounded-2xl border border-red-200 text-left">
+                <i data-lucide="user-x" class="w-6 h-6 text-red-700 mb-2"></i>
+                <h3 class="font-bold text-red-900 text-sm">Anonymous Mode</h3>
+                <p class="text-xs text-red-800 opacity-70">Privacy-focused anonymous interactions.</p>
+            </div>
+            <div class="p-4 bg-green-100 rounded-2xl border border-green-200 text-left">
+                <i data-lucide="database" class="w-6 h-6 text-green-700 mb-2"></i>
+                <h3 class="font-bold text-green-900 text-sm">Mongo Storage</h3>
+                <p class="text-xs text-green-800 opacity-70">Persistent sessions via connect-mongo.</p>
+            </div>
+            <div class="p-4 bg-yellow-100 rounded-2xl border border-yellow-200 text-left">
+                <i data-lucide="settings" class="w-6 h-6 text-yellow-700 mb-2"></i>
+                <h3 class="font-bold text-yellow-900 text-sm">Admin Panel</h3>
+                <p class="text-xs text-yellow-800 opacity-70">Full control over users and sessions.</p>
+            </div>
+            <div class="p-4 bg-red-100 rounded-2xl border border-red-200 text-left">
+                <i data-lucide="list-checks" class="w-6 h-6 text-red-700 mb-2"></i>
+                <h3 class="font-bold text-red-900 text-sm">Audit Logs</h3>
+                <p class="text-xs text-red-800 opacity-70">Track security events and user actions.</p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="/auth/login" class="flex items-center justify-center bg-green-100 hover:bg-green-200 text-green-800 font-bold py-4 px-10 rounded-2xl transition border border-green-300 shadow-sm">
+                <i data-lucide="log-in" class="w-5 h-5 mr-2"></i>
+                Login to Account
+            </a>
+            <a href="/auth/register" class="flex items-center justify-center bg-red-100 hover:bg-red-200 text-red-800 font-bold py-4 px-10 rounded-2xl transition border border-red-300 shadow-sm">
+                <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>
+                Create New Account
+            </a>
+        </div>
+        
+        <footer class="mt-8 text-xs text-gray-400">
+            &copy; 2024 Sentrax Hub • Built for Project21A
+        </footer>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed - Sentrax</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-50 min-h-screen font-sans text-gray-900">
+    <nav class="bg-white shadow-sm p-4 sticky top-0 z-10 border-b border-yellow-200">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="/secure/user" class="text-xl font-bold text-yellow-700">Sentrax</a>
+            <div class="flex items-center space-x-4">
+                <a href="/posts/create" class="bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-lg text-sm font-bold border border-green-200 transition">Create Post</a>
+                <a href="/secure/<%=currentUser.role%>" class="text-sm font-bold text-red-600 hover:text-red-800">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto p-4 mt-6">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">Community Feed</h2>
+
+        <% if (typeof posts !== 'undefined' && posts.length > 0) { %>
+            <% posts.forEach(post => { %>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
+                    <!-- Post Content -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2"><%= post.title %></h3>
+                        <p class="text-gray-600 mb-4 leading-relaxed"><%= post.content %></p>
+                        <div class="flex items-center text-xs text-gray-400 font-medium">
+                            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">By: <%= post.user.name %></span>
+                            <span class="mx-2">•</span>
+                            <span><%= new Date(post.createdAt).toLocaleDateString() %></span>
+                        </div>
+                    </div>
+
+                    <!-- Comment Section -->
+                    <div class="bg-gray-50 border-t border-gray-100 p-6">
+                        <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Comments</h4>
+                        
+                        <div class="space-y-4 mb-6">
+                            <% if (post.comments && post.comments.length > 0) { %>
+                                <% post.comments.forEach(comment => { %>
+                                    <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                        <p class="text-sm text-gray-800"><%= comment.content %></p>
+                                        <p class="text-[10px] mt-2 text-gray-400">
+                                            — <%= comment.isAnonymous ? 'Anonymous' : (comment.user ? comment.user.name : 'Unknown') %>
+                                        </p>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <p class="text-xs text-gray-400 italic">No comments yet. Be the first!</p>
+                            <% } %>
+                        </div>
+
+                        <!-- Add Comment Form -->
+                        <form action="/comments/add/<%= post._id %>" method="POST" class="mt-4">
+                            <textarea name="content" required placeholder="Write a comment..." 
+                                class="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-100 focus:border-green-400 outline-none resize-none h-20"></textarea>
+                            
+                            <div class="flex justify-between items-center mt-3">
+                                <label class="flex items-center text-xs text-gray-600 cursor-pointer">
+                                    <input type="checkbox" name="isAnonymous" class="mr-2 rounded border-gray-300 text-green-600 focus:ring-green-100">
+                                    Post anonymously
+                                </label>
+                                <button type="submit" class="bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-md text-xs font-bold border border-green-200 transition">
+                                    Post Comment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="bg-white p-12 rounded-xl border border-dashed border-gray-300 text-center">
+                <p class="text-gray-400">No posts found. Start the conversation!</p>
+                <a href="/posts/create" class="text-yellow-600 font-bold mt-2 block hover:underline">Create a post</a>
+            </div>
+        <% } %>
+    </main>
+</body>
+</html>
